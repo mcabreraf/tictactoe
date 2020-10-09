@@ -12,17 +12,32 @@ class Game extends React.Component {
             }
             ],
             enabled: false,
+            finished: false,
             stepNumber: 0,
-            xIsNext: true
+            xIsNext: true,
+            number: 0,
+            previousGames: []
         };
+        this.onChange = this.onChange.bind(this);
+        this.enableGame = this.enableGame.bind(this);
+        this.newGame = this.newGame.bind(this);
+        this.restartGame = this.restartGame.bind(this);
+        this.showOldGame =  this.showOldGame.bind(this);
+    }
+
+    onChange(state) {
+        this.setState(state);
     }
   
-    handleClick(i) {
+    handleClick = (i) => {
         if(this.state.enabled){
             const history = this.state.history.slice(0, this.state.stepNumber + 1);
             const current = history[history.length - 1];
             const squares = current.squares.slice();
             if (calculateWinner(squares) || squares[i]) {
+                this.setState({
+                    finished: true
+                })
                 return;
             }
             squares[i] = this.state.xIsNext ? "X" : "O";
@@ -38,7 +53,7 @@ class Game extends React.Component {
         }
     }
   
-    jumpTo(step) {
+    jumpTo = (step) => {
         this.setState({
             stepNumber: step,
             xIsNext: (step % 2) === 0
@@ -48,10 +63,10 @@ class Game extends React.Component {
     enableGame() {
         this.setState({
             enabled: !this.state.enabled
-        })
+        });
     }
 
-    restartGame() {
+    restartGame = () => {
         this.setState({
             history: [
                 {
@@ -59,9 +74,37 @@ class Game extends React.Component {
                 }
             ],
             enabled: false,
+            finished: false,
             stepNumber: 0,
-            xIsNext: 1
+            xIsNext: true
+        });
+    }
+
+    newGame = () => {
+        const savedGame = {
+            history: this.state.history,
+            enabled: this.state.enabled,
+            finished: this.state.finished,
+            stepNumber: this.state.stepNumber,
+            xIsNext: this.state.xIsNext,
+            number: this.state.number,
+        };
+        this.setState({
+            number: this.state.number + 1,
+            previousGames: this.state.previousGames.concat([savedGame])
+        });
+        this.restartGame();
+    }
+
+    showOldGame = (game) => {
+        this.setState({
+            history: game.history,
+            enabled: game.enabled,
+            finished: game.finished,
+            stepNumber: game.stepNumber,
+            xIsNext: game.xIsNext
         })
+        console.log(this.state.number);
     }
   
     render() {
@@ -76,24 +119,45 @@ class Game extends React.Component {
         }
 
         const history = this.state.history;
+        const previousGames = this.state.previousGames;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
+        const finished = this.state.finished;
 
         const moves = history.map((step, move) => {
             const desc = move ?
             'Go to move #' + move :
             'Go to game start';
+            if(finished){
+                return (
+                    <li key={move}>
+                        <button disabled>{desc}</button>
+                    </li>
+                );
+            }else{
+                return (
+                    <li key={move}>
+                        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                    </li>
+                );
+            }
+            
+        });
+
+        const previous = previousGames.map(game => {
             return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                <li key={game.number}>
+                    <button onClick={() => this.showOldGame(game)}>Game #{game.number}</button>
                 </li>
             );
-        });
+        })
   
         let status;
         if (winner) {
             status = "Winner: " + winner;
-        } else {
+        } else if(!winner && finished) {
+            status = "Draw!"
+        } else{
             status = "Next player: " + (this.state.xIsNext ? "X" : "O");
         }
 
@@ -104,8 +168,9 @@ class Game extends React.Component {
                     <h4>Actual Game</h4>
                     <div>{status}</div>
                     <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
-                    <button onClick={() => this.enableGame()}>{play}</button>
-                    <button onClick={() => this.restartGame()}>Restart</button>
+                    <button onClick={this.enableGame}>{play}</button>
+                    <button onClick={this.restartGame}>Restart</button>
+                    <button onClick={this.newGame}>New Game</button>
                     <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
                     <div className="game-board">
                         <Board
@@ -115,6 +180,7 @@ class Game extends React.Component {
                     </div>
                     <ol>{moves}</ol>
                     <h4>Previous Games</h4>
+                    <ol>{previous}</ol>
                 </div>
             </div>
       );
