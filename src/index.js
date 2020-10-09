@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import Game from './components/gameComponent';
-import * as serviceWorker from './serviceWorker';
+import App from './App';
 
 ReactDOM.render(
-    <Game />,
+    <App />,
   document.getElementById('root')
 );
 

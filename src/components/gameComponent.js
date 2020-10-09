@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Board from "./boardComponent";
 import { calculateWinner } from "../calculateWinner";
 
@@ -30,7 +31,7 @@ class Game extends React.Component {
     }
   
     handleClick = (i) => {
-        if(this.state.enabled){
+        if(this.state.enabled && !this.state.finished){
             const history = this.state.history.slice(0, this.state.stepNumber + 1);
             const current = history[history.length - 1];
             const squares = current.squares.slice();
@@ -101,10 +102,30 @@ class Game extends React.Component {
             enabled: this.state.enabled,
             finished: this.state.finished,
             stepNumber: this.state.stepNumber,
-            xIsNext: this.state.xIsNext,
-            number: this.state.number
+            xIsNext: this.state.xIsNext
         };
         console.log(savedGame);
+
+        const options = { 
+            method: 'post',
+            body: JSON.stringify(savedGame),
+            headers: {
+              'Accept': 'application/json, text/plain, */*',
+              'Content-Type': 'application/json'
+            },
+        }  
+        fetch('http://localhost:5000/games/', options)
+        .then(response => {
+            console.log(response)        
+            if (response.ok) {
+                return response.json();
+              } else {
+                 throw new Error('Something went wrong ...');
+              }
+            })
+              .then(data => this.setState({ creditcards: data.creditcards }))
+              .catch(error => this.setState({ error }));
+
         this.setState({
             number: this.state.number + 1,
             previousGames: this.state.previousGames.concat([savedGame]),
