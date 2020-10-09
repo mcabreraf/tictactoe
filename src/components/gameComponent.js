@@ -104,6 +104,7 @@ class Game extends React.Component {
             xIsNext: this.state.xIsNext,
             number: this.state.number
         };
+        console.log(savedGame);
         this.setState({
             number: this.state.number + 1,
             previousGames: this.state.previousGames.concat([savedGame]),
