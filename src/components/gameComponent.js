@@ -16,17 +16,13 @@ class Game extends React.Component {
             stepNumber: 0,
             xIsNext: true,
             number: 0,
-            previousGames: []
+            previousGames: [],
+            isPrev: false
         };
-        this.onChange = this.onChange.bind(this);
         this.enableGame = this.enableGame.bind(this);
         this.newGame = this.newGame.bind(this);
         this.restartGame = this.restartGame.bind(this);
         this.showOldGame =  this.showOldGame.bind(this);
-    }
-
-    onChange(state) {
-        this.setState(state);
     }
   
     handleClick = (i) => {
@@ -60,7 +56,7 @@ class Game extends React.Component {
         });
     }
 
-    enableGame() {
+    enableGame = () => {
         this.setState({
             enabled: !this.state.enabled
         });
@@ -76,7 +72,8 @@ class Game extends React.Component {
             enabled: false,
             finished: false,
             stepNumber: 0,
-            xIsNext: true
+            xIsNext: true,
+            isPrev: false
         });
     }
 
@@ -102,9 +99,29 @@ class Game extends React.Component {
             enabled: game.enabled,
             finished: game.finished,
             stepNumber: game.stepNumber,
-            xIsNext: game.xIsNext
+            xIsNext: game.xIsNext,
+            number: game.number,
+            isPrev: true
         })
-        console.log(this.state.number);
+    }
+
+    save = () => {
+        document.getElementsByClassName("newgame").disabled = true;
+        const prevGames = this.state.previousGames;
+        const pos = prevGames.findIndex(game => game.number === this.state.number);
+        const savedGame = {
+            history: this.state.history,
+            enabled: this.state.enabled,
+            finished: this.state.finished,
+            stepNumber: this.state.stepNumber,
+            number: this.state.number,
+            xIsNext: this.state.xIsNext,
+            isPrev: this.state.isPrev
+        };
+        prevGames[pos] = savedGame;
+        this.setState({
+            previousGames: prevGames
+        })
     }
   
     render() {
@@ -170,7 +187,8 @@ class Game extends React.Component {
                     <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
                     <button onClick={this.enableGame}>{play}</button>
                     <button onClick={this.restartGame}>Restart</button>
-                    <button onClick={this.newGame}>New Game</button>
+                    <button disabled={this.state.isPrev} onClick={this.newGame}>New Game</button>
+                    <button disabled={!this.state.isPrev} onClick={this.save}>Save</button>
                     <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
                     <div className="game-board">
                         <Board
