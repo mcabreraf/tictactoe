@@ -17,7 +17,11 @@ class Game extends React.Component {
             xIsNext: true,
             number: 0,
             previousGames: [],
-            isPrev: false
+            isPrev: false,
+            gamesPlayed: 1,
+            gamesWonX: 0,
+            gamesWonO: 0,
+            gamesTied: 0
         };
         this.enableGame = this.enableGame.bind(this);
         this.newGame = this.newGame.bind(this);
@@ -31,9 +35,22 @@ class Game extends React.Component {
             const current = history[history.length - 1];
             const squares = current.squares.slice();
             if (calculateWinner(squares) || squares[i]) {
-                this.setState({
-                    finished: true
-                })
+                if(calculateWinner(squares) === "X"){
+                    this.setState({
+                        finished: true,
+                        gamesWonX: this.state.gamesWonX+1
+                    })
+                }else if (calculateWinner(squares) === "O"){
+                    this.setState({
+                        finished: true,
+                        gamesWonO: this.state.gamesWonO+1
+                    })
+                }else if(squares[i]){
+                    this.setState({
+                        finished: true,
+                        gamesTied: this.state.gamesTied+1
+                    })
+                }
                 return;
             }
             squares[i] = this.state.xIsNext ? "X" : "O";
@@ -78,17 +95,19 @@ class Game extends React.Component {
     }
 
     newGame = () => {
+        this.inc_won();
         const savedGame = {
             history: this.state.history,
             enabled: this.state.enabled,
             finished: this.state.finished,
             stepNumber: this.state.stepNumber,
             xIsNext: this.state.xIsNext,
-            number: this.state.number,
+            number: this.state.number
         };
         this.setState({
             number: this.state.number + 1,
-            previousGames: this.state.previousGames.concat([savedGame])
+            previousGames: this.state.previousGames.concat([savedGame]),
+            gamesPlayed: this.state.gamesPlayed+1
         });
         this.restartGame();
     }
@@ -123,6 +142,24 @@ class Game extends React.Component {
             previousGames: prevGames
         })
     }
+
+    inc_pla = () => {
+        this.setState({
+            gamesPlayed: this.state.gamesPlayed+1
+        })
+    }
+
+    inc_won = () => {
+        this.setState({
+            gamesWon: this.state.gamesWon+1
+        })
+    }
+
+    inc_tie = () => {
+        this.setState({
+            gamesTied: this.state.gamesTied+1
+        })
+    }
   
     render() {
 
@@ -140,6 +177,10 @@ class Game extends React.Component {
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
         const finished = this.state.finished;
+        const gWonX = this.state.gamesWonX;
+        const gWonO = this.state.gamesWonO;
+        const gPla = this.state.gamesPlayed;
+        const gTied = this.state.gamesTied;
 
         const moves = history.map((step, move) => {
             const desc = move ?
@@ -184,6 +225,10 @@ class Game extends React.Component {
                     <h3>Tic Tac Toe game!</h3>
                     <h4>Actual Game</h4>
                     <div>{status}</div>
+                    <div>Games Played: {gPla}</div>
+                    <div>Games Won by X: {gWonX}</div>
+                    <div>Games Won by O: {gWonO}</div>
+                    <div>Games Tied: {gTied}</div>
                     <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
                     <button onClick={this.enableGame}>{play}</button>
                     <button onClick={this.restartGame}>Restart</button>
