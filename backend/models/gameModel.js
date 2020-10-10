@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const SquareSchema = new Schema({
-    squares: {
-        type: Array,
-        default: []
-    }
-})
-
 const GameSchema = new Schema({
     history: {
         type: [{

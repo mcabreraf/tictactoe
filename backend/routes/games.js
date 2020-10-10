@@ -22,8 +22,14 @@ gameRouter.route('/').post((req, res) => {
         xisnext
     });
 
-    newGame.save()
-    .then(() => res.json('Game added!'))
+    Game.create(newGame)
+    .then((game) => {
+        Game.findById(game._id)
+        .then((newgame) => {
+            console.log('Game created!')
+            res.json(game);
+        })
+    })
     .catch(err => res.status(400).json('Error: '+err))
 })
 

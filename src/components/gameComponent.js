@@ -16,10 +16,9 @@ class Game extends React.Component {
             finished: false,
             stepNumber: 0,
             xIsNext: true,
-            number: null,
+            number: Object,
             previousGames: [],
             isPrev: false,
-            gamesPlayed: 1,
             gamesWonX: 0,
             gamesWonO: 0,
             gamesTied: 0
@@ -30,7 +29,7 @@ class Game extends React.Component {
         this.showOldGame =  this.showOldGame.bind(this);
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         axios.get('http://localhost:5000/games/')
         .then(res => {
             if(res.data.length > 0){
@@ -40,6 +39,33 @@ class Game extends React.Component {
             }
         })
         .catch(err => console.log(err));
+        
+    }
+
+    componentDidMount(){
+        const previousGames = this.state.previousGames;
+        let n = 0;
+        let k = 0;
+        previousGames.map(element => {
+            const history = element.history.slice(0, element.stepNumber + 1);
+            const current = history[history.length - 1];
+            const squares = current.squares.slice();
+            if(calculateWinner(squares) === "X") n++;
+            if(calculateWinner(squares) === "O") k++;
+        });
+        this.setState({
+            gamesWonByX: n,
+            gamesWonByO: k
+        })
+    }
+
+    gamesPlayed = () => {
+        const cont = this.state.previousGames.length;
+        return cont;
+    }
+
+    gamesWon = () => {
+        
     }
 
     handleClick = (i) => {
@@ -52,17 +78,20 @@ class Game extends React.Component {
                     this.setState({
                         finished: true,
                         gamesWonX: this.state.gamesWonX+1
-                    })
+                    });
+                    alert('Winner is X');
                 }else if (calculateWinner(squares) === "O"){
                     this.setState({
                         finished: true,
                         gamesWonO: this.state.gamesWonO+1
                     })
+                    alert('Winner is O');
                 }else if(squares[i]){
                     this.setState({
                         finished: true,
                         gamesTied: this.state.gamesTied+1
                     })
+                    alert('Its a draw!');
                 }
                 return;
             }
@@ -108,7 +137,6 @@ class Game extends React.Component {
     }
 
     newGame = () => {
-        this.inc_won();
         const savedGame = {
             history: this.state.history,
             enabled: this.state.enabled,
@@ -118,35 +146,10 @@ class Game extends React.Component {
         };
         console.log(savedGame);
 
-        // const options = {
-        //     method: 'post',
-        //     body: JSON.stringify(savedGame),
-        //     headers: {
-        //       'Accept': 'application/json, text/plain, */*',
-        //       'Content-Type': 'application/json'
-        //     },
-        // }
-        // fetch('http://localhost:5000/games/', options)
-        // .then(response => {
-        //     console.log(response)
-        //     if (response.ok) {
-        //         return response.json();
-        //       } else {
-        //          throw new Error('Something went wrong ...');
-        //       }
-        //     })
-        //       .then(data => console.log(data))
-        //       .catch(error => console.log(error));
-
         axios.post('http://localhost:5000/games/',savedGame)
-        .then(res => console.log(res.data))
+        .then(res => alert("Last game was saved!"))
         .catch(err => console.log(err));
 
-        this.setState({
-            number: this.state.number + 1,
-            previousGames: this.state.previousGames.concat([savedGame]),
-            gamesPlayed: this.state.gamesPlayed+1
-        });
         this.restartGame();
     }
 
@@ -168,8 +171,6 @@ class Game extends React.Component {
     }
 
     save = () => {
-        const prevGames = this.state.previousGames;
-        const pos = prevGames.findIndex(game => game._id === this.state.number);
         const savedGame = {
             history: this.state.history,
             enabled: this.state.enabled,
@@ -178,30 +179,8 @@ class Game extends React.Component {
             xIsNext: this.state.xIsNext
         };
         axios.put('http://localhost:5000/games/'+this.state.number,savedGame)
-        .then((res) =>  console.log(res))
+        .then((res) => alert("Game was saved!"))
         .catch(err => console.log(err));
-        prevGames[pos] = savedGame;
-        this.setState({
-            previousGames: prevGames
-        })
-    }
-
-    inc_pla = () => {
-        this.setState({
-            gamesPlayed: this.state.gamesPlayed+1
-        })
-    }
-
-    inc_won = () => {
-        this.setState({
-            gamesWon: this.state.gamesWon+1
-        })
-    }
-
-    inc_tie = () => {
-        this.setState({
-            gamesTied: this.state.gamesTied+1
-        })
     }
 
     render() {
@@ -220,10 +199,6 @@ class Game extends React.Component {
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
         const finished = this.state.finished;
-        const gWonX = this.state.gamesWonX;
-        const gWonO = this.state.gamesWonO;
-        const gPla = this.state.gamesPlayed;
-        const gTied = this.state.gamesTied;
 
         const moves = history.map((step, move) => {
             const desc = move ?
@@ -232,13 +207,13 @@ class Game extends React.Component {
             if(finished){
                 return (
                     <li key={move}>
-                        <button disabled>{desc}</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" disabled>{desc}</button>
                     </li>
                 );
             }else{
                 return (
                     <li key={move}>
-                        <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onClick={() => this.jumpTo(move)}>{desc}</button>
                     </li>
                 );
             }
@@ -248,7 +223,7 @@ class Game extends React.Component {
         const previous = previousGames.map(game => {
             return (
                 <li key={game._id}>
-                    <button  onClick={() => this.showOldGame(game._id)}>Game ID: {game._id}</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm mybtnprev" onClick={() => this.showOldGame(game._id)}>Game ID: {game._id}</button>
                 </li>
             );
         })
@@ -265,28 +240,67 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-info">
-                    <h3>Tic Tac Toe game!</h3>
-                    <h4>Actual Game</h4>
-                    <div>{status}</div>
-                    <div>Games Played: {gPla}</div>
-                    <div>Games Won by X: {gWonX}</div>
-                    <div>Games Won by O: {gWonO}</div>
-                    <div>Games Tied: {gTied}</div>
-                    <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
-                    <button onClick={this.enableGame}>{play}</button>
-                    <button onClick={this.restartGame}>Restart</button>
-                    <button disabled={this.state.isPrev} onClick={this.newGame}>New Game</button>
-                    <button disabled={!this.state.isPrev} onClick={this.save}>Save</button>
-                    <div style={{marginBottom: "10px", marginTop: "10px"}}></div>
-                    <div className="game-board">
-                        <Board
-                            squares={current.squares}
-                            onClick={i => this.handleClick(i)}
-                        />
+                    <div className="row">
+                        <div className="col-12 d-flex justify-content-center">
+                            <h3>Tic Tac Toe game!</h3>
+                        </div>
                     </div>
-                    <ol>{moves}</ol>
-                    <h4>Previous Games</h4>
-                    <ol>{previous}</ol>
+                    <div className="row ">
+                        <div className="col-3 d-flex justify-content-center">
+                            <div>Games Played: {this.gamesPlayed()}</div>
+                        </div>
+                        <div className="col-3 d-flex justify-content-center">
+                            <div>Games Won by X: {this.state.gamesWonX}</div>
+                        </div>
+                        <div className="col-3 d-flex justify-content-center">
+                            <div>Games Won by O: {this.state.gamesWonO}</div>
+                        </div>
+                        <div className="col-3 d-flex justify-content-center">
+                            <div>Games Tied: {}</div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 d-flex justify-content-center">
+                            <h4>Actual Game</h4>
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <div>{status}</div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 align-self-center">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-secondary btn-sm" onClick={this.enableGame}>{play}</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onClick={this.restartGame}>Restart</button>
+                                <button type="button" class="btn btn-secondary btn-sm" disabled={this.state.isPrev} onClick={this.newGame}>New game</button>
+                                <button type="button"class="btn btn-secondary btn-sm" disabled={!this.state.isPrev} onClick={this.save}>Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="game-board">
+                        <div className="col-12 d-flex justify-content-center">
+                            <Board
+                                squares={current.squares}
+                                onClick={i => this.handleClick(i)}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-6 d-flex justify-content-start">
+                            <h5>Previous Moves</h5>
+                        </div>
+                        <div className="col-6 d-flex justify-content-end">
+                            <h5>Previous Games</h5>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-6 d-flex justify-content-start">
+                            <ol>{moves}</ol>
+                        </div>
+                        <div className="col-6 d-flex justify-content-end">
+                            <ol>{previous}</ol>
+                        </div>
+                    </div>
                 </div>
             </div>
       );
