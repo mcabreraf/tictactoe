@@ -1,19 +1,18 @@
 const gameRouter = require('express').Router();
 const Game = require('../models/gameModel');
 
-gameRouter.route('/')
-.get((req, res) => {
+gameRouter.route('/').get((req, res) => {
     Game.find()
     .populate('history')
     .then(games => res.json(games))
     .catch(err => res.status(400).json('Error: '+err))
 })
-.post((req, res) => {
+gameRouter.route('/').post((req, res) => {
     const history = req.body.history;
     const enabled = req.body.enabled;
     const finished = req.body.finished;
-    const stepnumber = req.body.stepnumber;
-    const xisnext = req.body.xisnext;
+    const stepnumber = req.body.stepNumber;
+    const xisnext = req.body.xIsNext;
 
     const newGame = new Game({
         history,
@@ -39,12 +38,12 @@ gameRouter.route('/:id')
         history: req.body.history,
         enabled: req.body.enabled,
         finished: req.body.finished,
-        stepnumber: req.body.stepnumber,
-        xisnext: req.body.xisnext
+        stepnumber: req.body.stepNumber,
+        xisnext: req.body.xIsNext
     }})
     .then(game => 
            Game.findById(game._id)
-           .populate('history')
+           .populate("history")
            .then(game => {
                 res.statusCode = 200;
                 res.json(game);

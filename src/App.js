@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -10,6 +10,7 @@ function App(){
         <Router>
             <div className="container"></div>
             <Route path="/games" exact component={Game} />
+            <Redirect to="/games" />
         </Router>
     );
 }

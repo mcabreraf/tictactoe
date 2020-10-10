@@ -11,7 +11,10 @@ const SquareSchema = new Schema({
 const GameSchema = new Schema({
     history: {
         type: [{
-            SquareSchema
+            squares: {
+                type: Array,
+                default: []
+            }
         }]
     },
     enabled: {

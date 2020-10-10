@@ -16,7 +16,7 @@ class Game extends React.Component {
             finished: false,
             stepNumber: 0,
             xIsNext: true,
-            number: 0,
+            number: null,
             previousGames: [],
             isPrev: false,
             gamesPlayed: 1,
@@ -29,7 +29,19 @@ class Game extends React.Component {
         this.restartGame = this.restartGame.bind(this);
         this.showOldGame =  this.showOldGame.bind(this);
     }
-  
+
+    componentDidMount() {
+        axios.get('http://localhost:5000/games/')
+        .then(res => {
+            if(res.data.length > 0){
+                this.setState({
+                    previousGames: res.data
+                })
+            }
+        })
+        .catch(err => console.log(err));
+    }
+
     handleClick = (i) => {
         if(this.state.enabled && !this.state.finished){
             const history = this.state.history.slice(0, this.state.stepNumber + 1);
@@ -66,7 +78,7 @@ class Game extends React.Component {
             });
         }
     }
-  
+
     jumpTo = (step) => {
         this.setState({
             stepNumber: step,
@@ -106,25 +118,29 @@ class Game extends React.Component {
         };
         console.log(savedGame);
 
-        const options = { 
-            method: 'post',
-            body: JSON.stringify(savedGame),
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/json'
-            },
-        }  
-        fetch('http://localhost:5000/games/', options)
-        .then(response => {
-            console.log(response)        
-            if (response.ok) {
-                return response.json();
-              } else {
-                 throw new Error('Something went wrong ...');
-              }
-            })
-              .then(data => this.setState({ creditcards: data.creditcards }))
-              .catch(error => this.setState({ error }));
+        // const options = {
+        //     method: 'post',
+        //     body: JSON.stringify(savedGame),
+        //     headers: {
+        //       'Accept': 'application/json, text/plain, */*',
+        //       'Content-Type': 'application/json'
+        //     },
+        // }
+        // fetch('http://localhost:5000/games/', options)
+        // .then(response => {
+        //     console.log(response)
+        //     if (response.ok) {
+        //         return response.json();
+        //       } else {
+        //          throw new Error('Something went wrong ...');
+        //       }
+        //     })
+        //       .then(data => console.log(data))
+        //       .catch(error => console.log(error));
+
+        axios.post('http://localhost:5000/games/',savedGame)
+        .then(res => console.log(res.data))
+        .catch(err => console.log(err));
 
         this.setState({
             number: this.state.number + 1,
@@ -134,31 +150,36 @@ class Game extends React.Component {
         this.restartGame();
     }
 
-    showOldGame = (game) => {
-        this.setState({
-            history: game.history,
-            enabled: game.enabled,
-            finished: game.finished,
-            stepNumber: game.stepNumber,
-            xIsNext: game.xIsNext,
-            number: game.number,
-            isPrev: true
+    showOldGame = (id) => {
+        axios.get('http://localhost:5000/games/'+id)
+        .then(res => {
+            this.setState({
+                history: res.data.history,
+                enabled: res.data.enabled,
+                finished: res.data.finished,
+                stepNumber: res.data.stepnumber,
+                xIsNext: res.data.xisnext,
+                number: res.data._id,
+                isPrev: true
+            })
         })
+        .catch(err => console.log(err));
+
     }
 
     save = () => {
-        document.getElementsByClassName("newgame").disabled = true;
         const prevGames = this.state.previousGames;
-        const pos = prevGames.findIndex(game => game.number === this.state.number);
+        const pos = prevGames.findIndex(game => game._id === this.state.number);
         const savedGame = {
             history: this.state.history,
             enabled: this.state.enabled,
             finished: this.state.finished,
             stepNumber: this.state.stepNumber,
-            number: this.state.number,
-            xIsNext: this.state.xIsNext,
-            isPrev: this.state.isPrev
+            xIsNext: this.state.xIsNext
         };
+        axios.put('http://localhost:5000/games/'+this.state.number,savedGame)
+        .then((res) =>  console.log(res))
+        .catch(err => console.log(err));
         prevGames[pos] = savedGame;
         this.setState({
             previousGames: prevGames
@@ -182,7 +203,7 @@ class Game extends React.Component {
             gamesTied: this.state.gamesTied+1
         })
     }
-  
+
     render() {
 
         const enableBut = this.state.enabled;
@@ -221,17 +242,17 @@ class Game extends React.Component {
                     </li>
                 );
             }
-            
+
         });
 
         const previous = previousGames.map(game => {
             return (
-                <li key={game.number}>
-                    <button onClick={() => this.showOldGame(game)}>Game #{game.number}</button>
+                <li key={game._id}>
+                    <button  onClick={() => this.showOldGame(game._id)}>Game ID: {game._id}</button>
                 </li>
             );
         })
-  
+
         let status;
         if (winner) {
             status = "Winner: " + winner;
