@@ -6,6 +6,28 @@ Hola! Este es un projecto realizado como prueba tecnica para la convocatoria de 
 
 El proyecto esta hecho con MERN, es decir, **MongoDB**, **ExpresJS**, **React** y **NodeJS**. Dentro de este mismo repo encontraremos que en el directorio principal se encuentra el FrontEnd y dentro del mismo un carpeta llamada "Backend" donde estara el servidor y la base de datos. La base de datos esta alojada en **MongoDB Atlas**.
 
+Las invitaciones al proyecto a los debidas personas de interes fueron enviadas. Si por algun motivo no es posible conectarse a la base datos, se deben hacer lo siguientes pasos:
+
+1. Ir a la pagina de MongoDB Atlas (https://www.mongodb.com/cloud/atlas) y crear una cuenta o iniciar sesion si ya se tiene..
+2. Crear un cluster donde se almacenaran las bases de datos y las respectivas configuraciones.
+3. Conectar a la aplicacion mediante la opcion "Connect your application". Al hacer click aqui, aparece un enlace. Para este proyecto, el enlace aparece asi:
+
+```
+mongodb+srv://tictactoe:<password>@cluster0.nsuh8.gcp.mongodb.net/<dbname>?retryWrites=true&w=majority
+```
+Y se reemplazaron los campos `<password>` y `<dbname>` por tictactoe en ambos casos. Para el link que les aparezca, deben cambiar estos mismos campos, y luego reemplazar ese enlace en la siguiente ruta:
+```
+tictactoe/backend/.env
+```
+En ese archivo colocamos despues del 'ATLAS_URI=' el enlance. Por ejemplo:
+```
+ATLAS_URI=mongodb+srv://tictactoe:tictactoe@cluster0.nsuh8.gcp.mongodb.net/tictactoe?retryWrites=true&w=majority
+```
+Por esto:
+```
+ATLAS_URI="tu enlace"
+```
+Luego de esto, el proyecto deberia funcionar sin mas complicaciones!
 ## ¿Como instalo y pruebo el repositorio?
 
 Para instalar y probar el repositorio lo primero que tenemos que hacer es clonar este repositorio. Seleccionado la ruta donde queramos clonarlo, nos digirimos a la terminal y escribimos
@@ -28,7 +50,6 @@ Tambien es posible usar Nodemon si se cuenta con este instalado en nuestro compu
 ```
 ...ruta/tictactoe/backend/nodemon
 ```
-
 Si todo sale bien, deberian aparecer los siguientes mensajes en nuestro terminal:
 ```
 Server is listening on port 5000!
@@ -73,7 +94,7 @@ Al iniciar el juego esta detenido, no permite hacer nada. Para empezar a jugar d
 * El juego finaliza cuando hay un 3 en raya.
 * El juego dice quien gano.
 * En caso de empate, el juego termina y avisa que hubo un empate.
-* Se muestra un listado de juegos iniciados y el ultimo ganador de la sesion.
+* Se muestra un listado de juegos iniciados en total, ademas de los juegos ganados por sesion.
 * Se hace uso de ReactJS.
 * Se usa Bootstrap como preprocesador de css.
 * Se hace uso de webpack manual (no mediante create-react-app).
@@ -81,3 +102,4 @@ Al iniciar el juego esta detenido, no permite hacer nada. Para empezar a jugar d
 * **No tengo Twitter!** pero si me encanta #javascript 😅
 * Este es el Readme con las debidas explicaciones!
 * Se hace entrega del proyecto en GitHub!
+* Dentro de la documentacion de React habia una codigo base para un juego de Tic Tac Toe. Se tomo ese codigo como base para el desarrollo. 

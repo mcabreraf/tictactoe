@@ -29,6 +29,7 @@ class Game extends React.Component {
         this.showOldGame =  this.showOldGame.bind(this);
     }
 
+    //This function is for constantly updating the games played
     componentDidUpdate() {
         axios.get('http://localhost:5000/games/')
         .then(res => {
@@ -42,28 +43,13 @@ class Game extends React.Component {
         
     }
 
-    componentDidMount(){
-        const previousGames = this.state.previousGames;
-        let n = 0;
-        let k = 0;
-        previousGames.map(element => {
-            const history = element.history.slice(0, element.stepNumber + 1);
-            const current = history[history.length - 1];
-            const squares = current.squares.slice();
-            if(calculateWinner(squares) === "X") n++;
-            if(calculateWinner(squares) === "O") k++;
-        });
-        this.setState({
-            gamesWonByX: n,
-            gamesWonByO: k
-        })
-    }
-
+    //This functions will gives us how many games has been played
     gamesPlayed = () => {
         const cont = this.state.previousGames.length;
         return cont;
     }
 
+    //This function handles the events when a person press on the borad and tha many different outcomes that it may result
     handleClick = (i) => {
         if(this.state.enabled && !this.state.finished){
             const history = this.state.history.slice(0, this.state.stepNumber + 1);
@@ -106,6 +92,7 @@ class Game extends React.Component {
         }
     }
 
+    //This function will return the step in history of the game
     jumpTo = (step) => {
         this.setState({
             stepNumber: step,
@@ -113,12 +100,14 @@ class Game extends React.Component {
         });
     }
 
+    //This function will enable the interaction beetween the person and the game
     enableGame = () => {
         this.setState({
             enabled: !this.state.enabled
         });
     }
 
+    //This funcstion is going to reset the state of the game to initial state
     restartGame = () => {
         this.setState({
             history: [
@@ -134,6 +123,7 @@ class Game extends React.Component {
         });
     }
 
+    //This function will communciate with the database so it can add a new game to previous games
     newGame = () => {
         const savedGame = {
             history: this.state.history,
@@ -151,6 +141,7 @@ class Game extends React.Component {
         this.restartGame();
     }
 
+    //This funcstion os going to show the previous game tha was selected into the board so the person can finish his or her game
     showOldGame = (id) => {
         axios.get('http://localhost:5000/games/'+id)
         .then(res => {
@@ -167,6 +158,7 @@ class Game extends React.Component {
         .catch(err => console.log(err));
     }
 
+    //When an old game is shown, this function is going to allow the person tu save the new result. If its not use, the old game will keep the last state saved.
     save = () => {
         const savedGame = {
             history: this.state.history,
@@ -188,6 +180,7 @@ class Game extends React.Component {
         const winner = calculateWinner(current.squares);
         const finished = this.state.finished;
 
+        //This a map of the previous moves to add many buttons so the person can go back to any move
         const moves = history.map((step, move) => {
             const desc = move ?
             'Go to move #' + move :
@@ -208,6 +201,7 @@ class Game extends React.Component {
 
         });
 
+        //This a map of the previous games to add many buttons so the person can go back to any game
         const previous = previousGames.map(game => {
             return (
                 <li key={game._id}>
@@ -216,6 +210,7 @@ class Game extends React.Component {
             );
         })
 
+        //A simple variable keeping the result
         let status;
         if (winner) {
             status = "Winner: " + winner;
@@ -227,6 +222,7 @@ class Game extends React.Component {
 
         const enableBut = this.state.enabled;
 
+        //A simple variable to see if the game is enable
         let play
         if(enableBut){
             play = "Pause";
@@ -254,7 +250,7 @@ class Game extends React.Component {
                             <div>Games Won by O: {this.state.gamesWonO}</div>
                         </div>
                         <div className="col-3 d-flex justify-content-center">
-                            <div>Games Tied: {}</div>
+                            <div>Games Tied: {this.state.gamesTied}</div>
                         </div>
                     </div>
                     <div className="row">
@@ -301,7 +297,7 @@ class Game extends React.Component {
                     </div>
                 </div>
             </div>
-      );
+        );
     }
 }
 
