@@ -1,68 +1,83 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Tic Tac Toe Game!
 
-## Available Scripts
+Hola! Este es un projecto realizado como prueba tecnica para la convocatoria de talentos NodeJS de Talenta365. En este readme encontraras la informacion necesaria para entender el proyecto y su magnitud.
 
-In the project directory, you can run:
+## ¿Como esta hecho el proyecto?
 
-### `yarn start`
+El proyecto esta hecho con MERN, es decir, **MongoDB**, **ExpresJS**, **React** y **NodeJS**. Dentro de este mismo repo encontraremos que en el directorio principal se encuentra el FrontEnd y dentro del mismo un carpeta llamada "Backend" donde estara el servidor y la base de datos. La base de datos esta alojada en **MongoDB Atlas**.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## ¿Como instalo y pruebo el repositorio?
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Para instalar y probar el repositorio lo primero que tenemos que hacer es clonar este repositorio. Seleccionado la ruta donde queramos clonarlo, nos digirimos a la terminal y escribimos
+```
+...ruta/git clone https://github.com/mcabreraf/tictactoe.git
+```
+Una vez clonado el repositorio, debemos instalar los paquetes que usa el proyecto para su funcionamiento. Para eso iremos a las siguientes rutas y haremos los siguientes comandos.
+```
+...ruta/tictactoe/backend/npm install
 
-### `yarn test`
+...ruta/tictactoe/yarn 
+```
+**NOTA:** Es necesario contar con NodeJS y Yarn instalados previamente en nuestro computador.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Luego debemos encender el servidor para que se conecte a la base de datos. Para ello, hacemos el siguiente comando.
+```
+...ruta/tictactoe/backend/npm start
+```
+Tambien es posible usar Nodemon si se cuenta con este instalado en nuestro computador.
+```
+...ruta/tictactoe/backend/nodemon
+```
 
-### `yarn build`
+Si todo sale bien, deberian aparecer los siguientes mensajes en nuestro terminal:
+```
+Server is listening on port 5000!
+Connected to database successfully!
+```
+Esto significa que nuestro servidor y nuestra base de datos estan funcionando correctamente.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+El siguiente paso es iniciar el cliente. Para ellos, hacemos el siguiente comando.
+```
+...ruta/tictactoe/yarn start
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Es posible que al hacer este comando, aparezca el siguiente mensaje:
+```
+? Something is already running on port 3000.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Would you like to run the app on another port instead? (Y/n)
+```
+Si este es el caso, solo debemos presionar la tecla Y de nuestro teclado en la consola e inmediatamente se nos abrira el cliente.
 
-### `yarn eject`
+Con eso seria suficiente para que el proyecto empieze a funcionar!
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## ¿Como jugar?
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Al iniciar el juego esta detenido, no permite hacer nada. Para empezar a jugar debemos presionar el boton **Play**. Al presionar aqui, se habilitan las demas opciones del proyecto y se puede empezar a presionar los cuadrados del tablero. El juego terminara cuando **'X'** o **'O'** hagan un tres en raya, o exista un empate entre los dos. Cuando un juego termine, se anunciara el ganador. Tambien hay un listado con los movimientos pasados a lo cuales un jugador se va a poder devolver. Para empezar un nuevo juego, se debe presionar el boton **New Game**, lo que hara que el juego se reinicie y el estado del juego anterior se guarde, por si en algun momento el jugador decide continuar su juego despues. Cabe resaltar que si el juego ha finalizado (es decir, hubo un ganador) no se va a poder continuar esa partida. El boton **Restart** solo va a reiniciar el estado del juego actual sin guardar su estado. El boton **Save** se encuentra deshabilitado y solo se activara cuando estemos viendo un juego viejo, y en consecuencia, el boton **New Game** se deshabilitara para evitar crear juegos repetidos. El objetivo de este boton es guardar el estado de nuestro juego previo cuando queramos. Y eso es todo!
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## ¿Que se implemento?
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+* Todo el codigo se encuentra en este repositorio.
+* Los commits se encuentran en intervalos de 3 horas, con excepcion de aquellos intervalos para dormir.
+* El backend esta creado en NodeJS.
+* Se utiliza el framework ExpressJS.
+* El juego se crea en backend y persiste en base de datos.
+* La base de datos es MongoDB.
+* Ambos jugadores son personas.
+* Los juegos puedan detenerse y reanudarse.
+* Se muestra un listado con juegos viejos.
+* Las jugadas de los jugadores estan quedan guardadas y pueden ser reanudadas si el juego no ha finalizado.
+* El FrontEnd muestra el juego.
+* El FrontEnd avisa que jugador tiene el turno.
+* El FrontEnd es una single page, no es necesario actualizarlo.
+* El juego finaliza cuando hay un 3 en raya.
+* El juego dice quien gano.
+* En caso de empate, el juego termina y avisa que hubo un empate.
+* Se muestra un listado de juegos iniciados y el ultimo ganador de la sesion.
+* Se hace uso de ReactJS.
+* Se usa Bootstrap como preprocesador de css.
+* Se hace uso de webpack manual (no mediante create-react-app).
+* Las pruebas estan automatizadas.
+* **No tengo Twitter!** pero si me encanta #javascript 😅
+* Este es el Readme con las debidas explicaciones!
+* Se hace entrega del proyecto en GitHub!
