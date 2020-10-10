@@ -70,7 +70,7 @@ Would you like to run the app on another port instead? (Y/n)
 ```
 Si este es el caso, solo debemos presionar la tecla Y de nuestro teclado en la consola e inmediatamente se nos abrira el cliente.
 
-Con eso seria suficiente para que el proyecto empieze a funcionar!
+Con eso seria suficiente para que el proyecto empiece a funcionar!
 
 ## ¿Como jugar?
 

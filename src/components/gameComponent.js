@@ -39,8 +39,20 @@ class Game extends React.Component {
                 })
             }
         })
-        .catch(err => console.log(err));
-        
+        .catch(err => console.log(err));  
+    }
+
+    //This function is going to show the previous games just once, when the components are mounted
+    componentDidMount() {
+        axios.get('http://localhost:5000/games/')
+        .then(res => {
+            if(res.data.length > 0){
+                this.setState({
+                    previousGames: res.data
+                })
+            }
+        })
+        .catch(err => console.log(err));  
     }
 
     //This functions will gives us how many games has been played
