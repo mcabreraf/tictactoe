@@ -23,13 +23,7 @@ gameRouter.route('/').post((req, res) => {
     });
 
     Game.create(newGame)
-    .then((game) => {
-        Game.findById(game._id)
-        .then((newgame) => {
-            console.log('Game created!')
-            res.json(game);
-        })
-    })
+    .then((game) => res.json(game))
     .catch(err => res.status(400).json('Error: '+err))
 })
 

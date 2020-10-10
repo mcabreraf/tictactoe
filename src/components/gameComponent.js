@@ -64,10 +64,6 @@ class Game extends React.Component {
         return cont;
     }
 
-    gamesWon = () => {
-        
-    }
-
     handleClick = (i) => {
         if(this.state.enabled && !this.state.finished){
             const history = this.state.history.slice(0, this.state.stepNumber + 1);
@@ -105,6 +101,8 @@ class Game extends React.Component {
                 stepNumber: history.length,
                 xIsNext: !this.state.xIsNext
             });
+        }else{
+            alert("Game is pause! Press on play to continue playing!")
         }
     }
 
@@ -167,7 +165,6 @@ class Game extends React.Component {
             })
         })
         .catch(err => console.log(err));
-
     }
 
     save = () => {
@@ -184,15 +181,6 @@ class Game extends React.Component {
     }
 
     render() {
-
-        const enableBut = this.state.enabled;
-
-        let play
-        if(enableBut){
-            play = "Pause";
-        }else{
-            play = "Play";
-        }
 
         const history = this.state.history;
         const previousGames = this.state.previousGames;
@@ -213,7 +201,7 @@ class Game extends React.Component {
             }else{
                 return (
                     <li key={move}>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onClick={() => this.jumpTo(move)}>{desc}</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onClick={() => this.jumpTo(move)} disabled={!this.state.enabled}>{desc}</button>
                     </li>
                 );
             }
@@ -223,7 +211,7 @@ class Game extends React.Component {
         const previous = previousGames.map(game => {
             return (
                 <li key={game._id}>
-                    <button type="button" class="btn btn-outline-dark btn-sm mybtnprev" onClick={() => this.showOldGame(game._id)}>Game ID: {game._id}</button>
+                    <button type="button" class="btn btn-outline-dark btn-sm mybtnprev" onClick={() => this.showOldGame(game._id)} disabled={!this.state.enabled}>Game ID: {game._id}</button>
                 </li>
             );
         })
@@ -237,12 +225,22 @@ class Game extends React.Component {
             status = "Next player: " + (this.state.xIsNext ? "X" : "O");
         }
 
+        const enableBut = this.state.enabled;
+
+        let play
+        if(enableBut){
+            play = "Pause";
+        }else{
+            play = "Play";
+            status = "Game is paused!"
+        }
+
         return (
             <div className="game">
                 <div className="game-info">
                     <div className="row">
                         <div className="col-12 d-flex justify-content-center">
-                            <h3>Tic Tac Toe game!</h3>
+                            <h1>TIC TAC TOE GAME!</h1>
                         </div>
                     </div>
                     <div className="row ">
@@ -270,9 +268,9 @@ class Game extends React.Component {
                     <div className="row">
                         <div className="col-12 align-self-center">
                             <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-secondary btn-sm" onClick={this.enableGame}>{play}</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onClick={this.restartGame}>Restart</button>
-                                <button type="button" class="btn btn-secondary btn-sm" disabled={this.state.isPrev} onClick={this.newGame}>New game</button>
+                                <button type="button" class="btn btn-success btn-sm" onClick={this.enableGame}>{play}</button>
+                                <button type="button" class="btn btn-danger btn-sm" onClick={this.restartGame}>Restart</button>
+                                <button type="button" class="btn btn-primary btn-sm" disabled={this.state.isPrev} onClick={this.newGame}>New game</button>
                                 <button type="button"class="btn btn-secondary btn-sm" disabled={!this.state.isPrev} onClick={this.save}>Save</button>
                             </div>
                         </div>
@@ -285,7 +283,7 @@ class Game extends React.Component {
                             />
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="row myrowgames">
                         <div className="col-6 d-flex justify-content-start">
                             <h5>Previous Moves</h5>
                         </div>

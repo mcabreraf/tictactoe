@@ -8,7 +8,7 @@ import Game from './components/gameComponent';
 function App(){
     return(
         <Router>
-            <div className="container-flex">
+            <div className="container">
                 <Route path="/games" exact component={Game} />
                 <Redirect to="/games" />
             </div>

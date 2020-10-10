@@ -1,12 +1,11 @@
 body {
-    background-color: black;
-    color: white;
-    font-family: "Roboto", sans-serif;
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
+  background-color: black;
+  color: white;
+  font-family: "Roboto", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
   
 ol, ul {
@@ -14,8 +13,16 @@ ol, ul {
   list-style: none;
 }
 
+h2 {
+  font-weight: bold;
+}
+
 .row {
   height: 60px;
+}
+
+.myrowgames {
+  height: 30px;
 }
 
 .btn {
@@ -38,12 +45,12 @@ ol, ul {
 }
 
 .square {
-  background: #fff;
-  border: 1px solid #999;
+  background-color: rgb(241, 241, 241);
+  border: 3px solid rgb(129, 129, 129);
   float: left;
-  font-size: 80px;
+  font-size: 65px;
   font-weight: bold;
-  line-height: 34px;
+  line-height: 25px;
   height: 100px;
   margin-right: -1px;
   margin-top: -1px;
